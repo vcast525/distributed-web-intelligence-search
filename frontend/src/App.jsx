@@ -23,21 +23,25 @@ function App() {
     return sources.find((source) => source.url === sourceFilter) || null;
   }, [sourceFilter, sources]);
 
-  const visibleResults = useMemo(() => {
-    if (selectedSource) {
-      return [
-        {
-          url: selectedSource.url,
-          title: selectedSource.title || "Untitled Source",
-          clean_text:
-            "This indexed source is available in the platform. Use keyword search to retrieve relevance-ranked content from Elasticsearch.",
-          score: null,
-        },
-      ];
-    }
+const visibleResults = useMemo(() => {
+  if (query.trim() && selectedSource) {
+    return results.filter((result) => result.url === selectedSource.url);
+  }
 
-    return results;
-  }, [selectedSource, results]);
+  if (!query.trim() && selectedSource) {
+    return [
+      {
+        url: selectedSource.url,
+        title: selectedSource.name || selectedSource.title || "Untitled Source",
+        clean_text:
+          "This indexed source is available in the platform. Enter a keyword to search within this source.",
+        score: null,
+      },
+    ];
+  }
+
+  return results;
+}, [query, selectedSource, results]);
 
   async function loadSources(showMessage = false) {
     setIsLoadingSources(true);
@@ -72,7 +76,6 @@ function App() {
     setIsSearching(true);
     setErrorMessage("");
     setStatusMessage("");
-    setSourceFilter("all");
 
     try {
       const response = await fetch(
@@ -239,13 +242,13 @@ function App() {
         </div>
 
         <div className="filter-row">
-          <label htmlFor="source-filter">View Source</label>
+          <label htmlFor="source-filter">Search Scope</label>
           <select
             id="source-filter"
             value={sourceFilter}
             onChange={handleSourceChange}
           >
-            <option value="all">All indexed sources</option>
+            <option value="all">Entire Source Library</option>
             {sources.map((source) => (
               <option key={source.document_id} value={source.url}>
                 {source.name || source.title || source.url}
@@ -273,7 +276,7 @@ function App() {
             <p className="section-label">Results</p>
             <h2>
               {selectedSource
-                ? "Selected source"
+                ? "No matching results"
                 : totalResults === null
                 ? "Ready to search"
                 : `${visibleResults.length} result${
