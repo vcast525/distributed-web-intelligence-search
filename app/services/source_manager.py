@@ -4,6 +4,7 @@ from bson.errors import InvalidId
 from app.services.database import get_webpages_collection
 from app.services.indexer import client, ELASTICSEARCH_INDEX
 
+
 def get_all_sources() -> list[dict]:
     webpages_collection = get_webpages_collection()
 
@@ -11,7 +12,9 @@ def get_all_sources() -> list[dict]:
         {},
         {
             "_id": 1,
+            "name": 1,
             "url": 1,
+            "category": 1,
             "title": 1,
             "status_code": 1,
             "processing_status": 1,
@@ -28,7 +31,9 @@ def get_all_sources() -> list[dict]:
         sources.append(
             {
                 "document_id": str(document["_id"]),
+                "name": document.get("name"),
                 "url": document.get("url"),
+                "category": document.get("category"),
                 "title": document.get("title"),
                 "status_code": document.get("status_code"),
                 "processing_status": document.get("processing_status"),
@@ -76,5 +81,7 @@ def delete_source(document_id: str) -> dict:
         "status": "deleted",
         "message": "Source deleted successfully.",
         "document_id": document_id,
+        "name": document.get("name"),
         "url": document.get("url"),
+        "category": document.get("category"),
     }

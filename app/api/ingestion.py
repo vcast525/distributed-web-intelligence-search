@@ -16,25 +16,31 @@ router = APIRouter(
     response_model=IngestionResponse,
     status_code=202,
 )
-async def ingest_urls(request: IngestionRequest) -> IngestionResponse:
+async def ingest_sources(request: IngestionRequest) -> IngestionResponse:
     webpages_collection = get_webpages_collection()
 
-    urls_queued = []
-    urls_skipped = []
+    sources_queued = []
+    sources_skipped = []
 
-    for url in request.urls:
-        normalized_url = normalize_url(str(url))
+    for source in request.sources:
+        normalized_url = normalize_url(str(source.url))
+
+        source_payload = {
+            "name": source.name,
+            "url": normalized_url,
+            "category": source.category,
+        }
 
         if document_exists(webpages_collection, normalized_url):
-            urls_skipped.append(normalized_url)
+            sources_skipped.append(source_payload)
         else:
-            process_ingestion_job.delay(normalized_url)
-            urls_queued.append(normalized_url)
+            process_ingestion_job.delay(source_payload)
+            sources_queued.append(source_payload)
 
     return IngestionResponse(
         message="Ingestion request processed.",
-        queued_urls=len(urls_queued),
-        skipped_urls=len(urls_skipped),
-        urls_queued=urls_queued,
-        urls_skipped=urls_skipped,
+        queued_sources=len(sources_queued),
+        skipped_sources=len(sources_skipped),
+        sources_queued=sources_queued,
+        sources_skipped=sources_skipped,
     )

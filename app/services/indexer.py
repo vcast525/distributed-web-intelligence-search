@@ -11,7 +11,9 @@ client = Elasticsearch(ELASTICSEARCH_URL)
 
 def index_document(document: dict) -> dict:
     search_document = {
+        "name": document["name"],
         "url": document["url"],
+        "category": document["category"],
         "title": document["title"],
         "headings": document["headings"],
         "paragraphs": document["paragraphs"],

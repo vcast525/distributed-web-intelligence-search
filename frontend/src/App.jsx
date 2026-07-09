@@ -190,10 +190,18 @@ function App() {
         </p>
       </section>
 
+      <section className="workspace-heading">
+        <p className="eyebrow">Intelligence Workspace</p>
+        <h2>Explore indexed intelligence</h2>
+        <p>
+          Use keyword search and source filtering to explore crawled, processed, and indexed intelligence content.
+        </p>
+      </section>
+
       <section className="search-panel">
         <div className="panel-header">
           <div>
-            <p className="section-label">Search Intelligence</p>
+            <p className="section-label">Query Workspace</p>
             <h2>Find indexed content</h2>
           </div>
           <span className="status-pill">Backend Connected</span>
@@ -240,7 +248,7 @@ function App() {
             <option value="all">All indexed sources</option>
             {sources.map((source) => (
               <option key={source.document_id} value={source.url}>
-                {source.title || source.url}
+                {source.name || source.title || source.url}
               </option>
             ))}
           </select>
@@ -262,7 +270,7 @@ function App() {
       <section className="results-panel">
         <div className="panel-header compact-header">
           <div>
-            <p className="section-label">Search Results</p>
+            <p className="section-label">Results</p>
             <h2>
               {selectedSource
                 ? "Selected source"
@@ -311,11 +319,19 @@ function App() {
         ))}
       </section>
 
+      <section className="workspace-heading source-library-heading">
+        <p className="eyebrow">Source Library</p>
+        <h2>Manage the intelligence source repository</h2>
+        <p>
+          Review the approved sources available to the APEX platform and manage indexed source records.
+        </p>
+      </section>
+
       <section className="source-panel">
         <div className="panel-header compact-header">
           <div>
-            <p className="section-label">Indexed Sources</p>
-            <h2>{sources.length} source{sources.length === 1 ? "" : "s"}</h2>
+              <p className="section-label">Source Repository</p>
+              <h2>{sources.length} indexed source{sources.length === 1 ? "" : "s"}</h2>
           </div>
           <button
             type="button"
@@ -337,7 +353,7 @@ function App() {
           {sources.map((source) => (
             <article className="source-card" key={source.document_id}>
               <div>
-                <p className="source-title">{source.title || "Untitled Source"}</p>
+                <p className="source-title">{source.name || source.title || "Untitled Source"}</p>
                 <p className="source-url">{source.url}</p>
               </div>
 

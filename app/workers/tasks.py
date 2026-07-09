@@ -16,19 +16,32 @@ logger = logging.getLogger("web_intelligence.pipeline")
 
 
 @celery_app.task
-def process_ingestion_job(url: str) -> dict:
-    normalized_url = normalize_url(url)
+def process_ingestion_job(source: dict) -> dict:
+    source_name = source["name"]
+    normalized_url = normalize_url(source["url"])
+    category = source["category"]
+
     webpages_collection = get_webpages_collection()
 
-    logger.info("[PIPELINE] 1/5 URL RECEIVED | url=%s", normalized_url)
+    logger.info(
+        "[PIPELINE] 1/5 SOURCE RECEIVED | name=%s | category=%s | url=%s",
+        source_name,
+        category,
+        normalized_url,
+    )
 
     if document_exists(webpages_collection, normalized_url):
-        logger.info("[PIPELINE] DUPLICATE SKIPPED | url=%s", normalized_url)
+        logger.info(
+            "[PIPELINE] DUPLICATE SKIPPED | url=%s",
+            normalized_url,
+        )
 
         return {
             "status": "skipped",
             "message": "URL already exists and was not processed again.",
+            "name": source_name,
             "url": normalized_url,
+            "category": category,
         }
 
     crawl_result = asyncio.run(fetch_url(normalized_url))
@@ -43,7 +56,9 @@ def process_ingestion_job(url: str) -> dict:
         processed_content = process_html(crawl_result["content"])
 
         document = {
+            "name": source_name,
             "url": normalized_url,
+            "category": category,
             "status_code": crawl_result["status_code"],
             "title": processed_content["title"],
             "clean_text": processed_content["clean_text"],
@@ -69,7 +84,9 @@ def process_ingestion_job(url: str) -> dict:
             return {
                 "status": "skipped",
                 "message": "URL already exists and was not processed again.",
+                "name": source_name,
                 "url": normalized_url,
+                "category": category,
             }
 
         logger.info(
@@ -96,13 +113,16 @@ def process_ingestion_job(url: str) -> dict:
         )
 
         logger.info(
-            "[PIPELINE] 5/5 PIPELINE COMPLETED | url=%s | title=%s",
+            "[PIPELINE] 5/5 PIPELINE COMPLETED | name=%s | category=%s | url=%s",
+            source_name,
+            category,
             normalized_url,
-            processed_content["title"],
         )
 
         logger.info(
-            "[PIPELINE SUMMARY] SUCCESS | url=%s | title=%s | mongo_document_id=%s | elasticsearch_id=%s",
+            "[PIPELINE SUMMARY] SUCCESS | name=%s | category=%s | url=%s | title=%s | mongo_document_id=%s | elasticsearch_id=%s",
+            source_name,
+            category,
             normalized_url,
             processed_content["title"],
             str(insert_result.inserted_id),
@@ -111,8 +131,10 @@ def process_ingestion_job(url: str) -> dict:
 
         return {
             "status": "completed",
-            "message": "URL crawled, processed, stored, and indexed successfully.",
+            "message": "Source crawled, processed, stored, and indexed successfully.",
+            "name": source_name,
             "url": normalized_url,
+            "category": category,
             "status_code": crawl_result["status_code"],
             "title": processed_content["title"],
             "mongo_document_id": str(insert_result.inserted_id),
@@ -120,14 +142,18 @@ def process_ingestion_job(url: str) -> dict:
         }
 
     logger.error(
-        "[PIPELINE] FAILED | url=%s | http_status=%s",
+        "[PIPELINE] FAILED | name=%s | category=%s | url=%s | http_status=%s",
+        source_name,
+        category,
         normalized_url,
         crawl_result["status_code"],
     )
 
     return {
         "status": "failed",
-        "message": "URL crawl failed.",
+        "message": "Source crawl failed.",
+        "name": source_name,
         "url": normalized_url,
+        "category": category,
         "status_code": crawl_result["status_code"],
     }
