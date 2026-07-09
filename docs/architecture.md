@@ -2,11 +2,11 @@
 
 ## Architecture Overview
 
-The Distributed Web Intelligence Search Engine uses a containerized, distributed application architecture to collect, store, process, index, and search web-based intelligence from approved external sources.
+The Distributed Web Intelligence Search Engine uses a containerized, distributed application architecture to collect, process, store, index, manage, and search web-based intelligence from approved external sources.
 
-The system is designed to simulate how enterprise analysts could search across regulatory, technology, risk, compliance, and industry sources from one centralized application.
+The system simulates how enterprise analysts could centralize external intelligence from regulatory, technology, risk, compliance, financial, cybersecurity, government, and industry sources within a single searchable application.
 
-The architecture separates the user-facing search experience, API communication, asynchronous job processing, web crawling, raw content storage, content processing, search indexing, and infrastructure orchestration into distinct system layers.
+The architecture separates the user-facing dashboard, API communication, asynchronous job processing, web content retrieval, source repository management, document storage, search indexing, and infrastructure orchestration into distinct system layers.
 
 This separation of responsibilities improves scalability, maintainability, reliability, and future extensibility.
 
@@ -14,7 +14,7 @@ This separation of responsibilities improves scalability, maintainability, relia
 
 ## User-Facing Concept
 
-The end user interacts with a centralized search interface that allows analysts to search indexed web intelligence collected from approved external sources.
+The end user interacts with a centralized React dashboard that allows analysts to search indexed web intelligence collected from approved external sources.
 
 The frontend provides the visual experience that is powered by the distributed backend architecture.
 
@@ -23,41 +23,62 @@ The frontend provides the visual experience that is powered by the distributed b
 │                                                             │
 │              APEX FINANCIAL INTELLIGENCE                    │
 │                                                             │
-│  Dashboard     Search Intelligence     Sources     Admin    │
+│  Intelligence Workspace              Source Library         │
 │                                                             │
 ├─────────────────────────────────────────────────────────────┤
 │                                                             │
-│  🔎 SEARCH COMPANY INTELLIGENCE                             │
+│  🔎 FIND INDEXED CONTENT                                   │
 │                                                             │
 │  ┌─────────────────────────────────────────────┐            │
-│  │ Artificial Intelligence Banking Regulation │   SEARCH   │
+│  │ risk                                        │   SEARCH   │
 │  └─────────────────────────────────────────────┘            │
 │                                                             │
-│  Search across indexed regulatory and industry sources      │
+│  Search Scope                                               │
+│  ┌─────────────────────────────────────────────┐            │
+│  │ Entire Source Library                       │            │
+│  └─────────────────────────────────────────────┘            │
 │                                                             │
 ├─────────────────────────────────────────────────────────────┤
 │                                                             │
-│  127 RESULTS FOUND                         SORT: RELEVANCE   │
+│  RESULTS                                                    │
 │                                                             │
-│  Federal Reserve Releases AI Banking Guidance               │
-│  federalreserve.gov                                         │
+│  10 visible results shown from 10 total results for risk    │
 │                                                             │
-│  "...new artificial intelligence requirements for           │
-│  financial institutions and risk management..."             │
+│  Federal Deposit Insurance Corporation                      │
+│  fdic.gov                                                   │
 │                                                             │
-│  Relevance Score: 97%                                       │
+│  "...risk management..."                                    │
+│                                                             │
+│  Relevance Score: 12.58                                     │
 │                                                             │
 │  ─────────────────────────────────────────────────────────  │
 │                                                             │
-│  OCC Announces Technology Risk Framework                    │
-│  occ.gov                                                    │
+│  Federal Reserve Bank of St. Louis                          │
+│  stlouisfed.org                                             │
 │                                                             │
-│  "...artificial intelligence risk management..."            │
+│  "...economic data and financial risk..."                   │
 │                                                             │
-│  Relevance Score: 91%                                       │
+│  Relevance Score: 10.42                                     │
+│                                                             │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  SOURCE LIBRARY                                             │
+│                                                             │
+│  100 indexed sources                                        │
+│                                                             │
+│  Source cards display source name, URL, HTTP status,        │
+│  processing status, indexing status, and delete controls.   │
 │                                                             │
 └─────────────────────────────────────────────────────────────┘
 ```
+The Intelligence Workspace allows users to search indexed content using a keyword query and a defined Search Scope.
+
+The Source Library allows users to review and manage the intelligence sources currently available to the platform.
+
+The frontend makes the distributed backend system understandable and usable by presenting ingestion, search, source management, and system status through a clean user interface.
+
+---
+
 ## User-Facing Pipeline Concept
 
 The user-facing pipeline concept shows how the frontend can visually represent the backend ingestion, processing, storage, and indexing workflow.
@@ -65,28 +86,29 @@ The user-facing pipeline concept shows how the frontend can visually represent t
 This concept exists to make the distributed backend system easier to understand by connecting each backend component to something the user can see on screen.
 
 ```text
+
 ┌────────────────────────────────────────────────────────────────┐
 │                                                                │
 │              DISTRIBUTED WEB INTELLIGENCE                      │
 │                                                                │
-│  Submit URLs for distributed crawling, processing,             │
-│  storage, indexing, and search.                                │
+│  Submit approved sources for distributed retrieval,            │
+│  processing, storage, indexing, and search.                    │
 │                                                                │
 ├────────────────────────────────────────────────────────────────┤
 │                                                                │
-│  ENTER WEBSITE URL                                             │
+│  APPROVED SOURCE                                               │
 │                                                                │
-│  ┌───────────────────────────────────────────────────────┐     │
-│  │ https://example.com                                   │     │
-│  └───────────────────────────────────────────────────────┘     │
+│  Name        Federal Reserve                                   │
+│  URL         https://www.federalreserve.gov/                   │
+│  Category    Regulatory & Government Intelligence              │
 │                                                                │
-│                      [ INGEST URL ]                            │
+│                      [ INGEST SOURCE ]                         │
 │                                                                │
 ├────────────────────────────────────────────────────────────────┤
 │                                                                │
 │  PIPELINE STATUS                                               │
 │                                                                │
-│  🌐 Crawled     ✅ Completed                                   │
+│  🌐 Crawled     ✅ Completed                                   │ 
 │                                                                │
 │  🧹 Processed   ✅ Completed                                   │
 │                                                                │
@@ -96,11 +118,13 @@ This concept exists to make the distributed backend system easier to understand 
 │                                                                │
 ├────────────────────────────────────────────────────────────────┤
 │                                                                │
-│  PAGE INFORMATION                                              │
+│  SOURCE INFORMATION                                            │
 │                                                                │
-│  URL             https://example.com                           │
+│  Name            Federal Reserve                               │
 │                                                                │
-│  Title           Example Domain                                │
+│  URL             https://www.federalreserve.gov/               │
+│                                                                │
+│  Category        Regulatory & Government Intelligence          │
 │                                                                │
 │  HTTP Status     200 OK                                        │
 │                                                                │
@@ -110,9 +134,10 @@ This concept exists to make the distributed backend system easier to understand 
 │                                                                │
 │  EXTRACTED CONTENT                                             │
 │                                                                │
-│  Example Domain                                                │
+│  Federal Reserve Board - Home                                  │
 │                                                                │
-│  This domain is for use in illustrative examples...            │
+│  The Federal Reserve Board supervises and regulates            │
+│  financial institutions and supports financial stability...    │
 │                                                                │
 └────────────────────────────────────────────────────────────────┘
 ```
@@ -121,16 +146,17 @@ This frontend concept helps connect backend engineering work to visible user val
 
 | User-Facing Element | Backend Component | What It Proves |
 | --- | --- | --- |
-| Enter Website URL | FastAPI ingestion endpoint | The user can submit a URL into the system |
-| Pipeline Status | Redis, Celery, crawler, processor, MongoDB, Elasticsearch | The user can see each processing stage |
-| Crawled Status | Crawler service | The system contacted the external website |
+| Approved Source | FastAPI ingestion endpoint and Pydantic models | The system can accept structured source metadata |
+| Pipeline Status | Redis, Celery, crawler, processor, MongoDB, Elasticsearch | The distributed processing workflow can be observed across each stage |
+| Crawled Status | Crawler service | The system contacted the approved external website |
 | Processed Status | Processor service | The system extracted useful text from raw HTML |
-| Stored Status | MongoDB | The system persisted the webpage document |
+| Stored Status | MongoDB | The system persisted the source document |
 | Indexed Status | Elasticsearch | The system prepared the document for search |
-| Page Information | MongoDB document fields | The user can see structured webpage metadata |
-| Extracted Content | Processor output | The user can see cleaned text produced from raw HTML |
+| Source Information | MongoDB document fields | The system stores and exposes structured source metadata |
+| Extracted Content | Processor output | The system produces cleaned text from raw HTML |
 
 The goal is not only to build a backend system, but to make the backend system observable, understandable, and demonstrable through a visible user experience.
+
 ---
 
 ## High-Level Architecture
@@ -149,15 +175,19 @@ Elasticsearch Search Index
 Search Results Returned to User
 ```
 
-The user interacts only with the frontend application.
+The user interacts only with the React frontend.
 
 The frontend communicates with FastAPI through REST API requests.
 
-FastAPI processes the search request and communicates with Elasticsearch.
+FastAPI routes search requests to Elasticsearch, source management requests to MongoDB, and ingestion requests to Redis and Celery.
 
-Elasticsearch searches indexed documents, calculates relevance scores, identifies matching content, and returns results to FastAPI.
+Redis coordinates queued ingestion jobs.
 
-FastAPI returns the structured search results to the frontend for presentation to the user.
+Celery workers process ingestion jobs asynchronously.
+
+MongoDB stores source records and processed content.
+
+Elasticsearch indexes searchable content and returns relevance-ranked search results.
 
 ---
 
@@ -205,6 +235,14 @@ Processed content is indexed into Elasticsearch.
 
 The complete system architecture connects the business requirements, user-facing application, API layer, data contracts, backend processing services, storage systems, and search infrastructure into a single distributed application.
 
+The architecture contains three primary application workflows:
+
+1. Source ingestion and distributed processing
+2. Search and result retrieval
+3. Source repository management
+
+These workflows operate through shared backend services while remaining logically separated.
+
 The architecture demonstrates how a business requirement becomes a user-facing capability and how that capability is implemented through frontend components, API endpoints, backend services, and distributed infrastructure.
 
 ```text
@@ -220,7 +258,7 @@ The architecture demonstrates how a business requirement becomes a user-facing c
                     USER-FACING APPLICATION
                                 │
                                 ▼
-                          FRONTEND UI
+                          REACT FRONTEND
                                 │
                                 ▼
                      API REQUEST / RESPONSE
@@ -231,68 +269,58 @@ The architecture demonstrates how a business requirement becomes a user-facing c
                                 ▼
                          API ENDPOINTS
                                 │
-              ┌─────────────────┼─────────────────┐
+              ┌─────────────────┼─────────────────┬─────────────────┐
+              │                 │                 │                 │
+              ▼                 ▼                 ▼                 ▼
+            POST               GET               GET              DELETE
+      /api/v1/ingest     /api/v1/search    /api/v1/sources   /api/v1/sources/{id}
+              │                 │                 │                 │
+              ▼                 ▼                 ▼                 ▼
+       Submit Sources     Search Content    Retrieve Sources   Delete Source
+              │                 │                 │                 │
+              ▼                 │                 ▼                 ▼
+         API SCHEMAS            │         Source Manager       Source Manager
+              │                 │                 │                 │
+              ▼                 │                 ▼                 ▼
+      PYDANTIC VALIDATION       │              MONGODB          MONGODB
+              │                 │                 │                 │
+              ▼                 │                 │                 ▼
+      BACKEND APPLICATION       │                 │          ELASTICSEARCH
+             LOGIC              │                 │
+              │                 │                 │
+              ▼                 │                 │
+            REDIS               │                 │
+              │                 │                 │
+              ▼                 │                 │
+        CELERY WORKERS          │                 │
+              │                 │                 │
+              ▼                 │                 │
+          WEB CRAWLER           │                 │
+              │                 │                 │
+              ▼                 │                 │
+           MONGODB              │                 │
+              │                 │                 │
+              ▼                 │                 │
+     CONTENT PROCESSING         │                 │
+          PIPELINE              │                 │
+              │                 │                 │
+              ▼                 ▼                 │
+       ELASTICSEARCH ◄──── SEARCH SERVICE         │
               │                 │                 │
               ▼                 ▼                 ▼
-
-            POST               GET               GET
-
-      /api/v1/ingest     /api/v1/search        /health
-
+        SEARCHABLE CONTENT   SEARCH RESULTS   SOURCE LIBRARY
               │                 │                 │
-              ▼                 ▼                 ▼
-
-        Submit URLs       Search Content     Check System
-                                                 Health
-
-              │                 │
-              ▼                 │
-         API SCHEMAS             │
-              │                 │
-              ▼                 │
-      PYDANTIC VALIDATION        │
-              │                 │
-              ▼                 │
-      BACKEND APPLICATION        │
-             LOGIC               │
-              │                 │
-              ▼                 │
-            REDIS               │
-              │                 │
-              ▼                 │
-        CELERY WORKERS           │
-              │                 │
-              ▼                 │
-          WEB CRAWLER            │
-              │                 │
-              ▼                 │
-           MONGODB               │
-              │                 │
-              ▼                 │
-     CONTENT PROCESSING          │
-          PIPELINE               │
-              │                 │
-              ▼                 │
-       ELASTICSEARCH ◄───────────┘
-              │
-              ▼
-        SEARCH RESULTS
-              │
-              ▼
-          FASTAPI API
-              │
-              ▼
-          FRONTEND UI
-              │
-              ▼
-    SEARCH RESULTS DISPLAYED
-              │
-              ▼
-             USER
-
-
+              └─────────────────┴─────────────────┘
+                                │
+                                ▼
+                          FASTAPI API
+                                │
+                                ▼
+                          REACT FRONTEND
+                                │
+                                ▼
+                               USER
                   DEVELOPER DOCUMENTATION FLOW
-
                            PYTHON CODE
                                 │
                                 ▼
@@ -315,211 +343,345 @@ The architecture demonstrates how a business requirement becomes a user-facing c
 The architecture can be understood as a complete end-to-end software engineering workflow:
 
 1. A business problem establishes the need for the application.
-
 2. Application requirements define what the software must accomplish.
-
 3. Software capabilities translate those requirements into specific system functionality.
-
 4. The user-facing application provides a visual interface through which users interact with those capabilities.
-
-5. The frontend sends requests to the backend through API endpoints.
-
-6. FastAPI provides the backend application framework and exposes the system's API endpoints.
-
+5. The React frontend sends requests to the backend through API endpoints.
+6. FastAPI provides the backend application framework and exposes the system’s API endpoints.
 7. API schemas define the structure and validation rules for request and response data.
-
 8. Pydantic validates incoming application data before it enters the backend processing workflow.
-
-9. The ingestion endpoint accepts URLs submitted for distributed web processing.
-
-10. Redis coordinates asynchronous processing by supporting message brokering, rate limiting, and URL deduplication.
-
+9. The ingestion endpoint accepts approved sources submitted for distributed web processing.
+10. Redis coordinates asynchronous processing through message brokering.
 11. Celery workers execute processing jobs outside the FastAPI request lifecycle.
-
 12. The web crawler retrieves external web content.
-
-13. MongoDB stores the collected raw and processed web documents.
-
+13. MongoDB stores collected source metadata, raw content, and processed web documents.
 14. The content processing pipeline extracts, transforms, and prepares web content for search indexing.
-
-15. Elasticsearch indexes the processed content and provides full-text search, relevance scoring, and result highlighting.
-
+15. Elasticsearch indexes processed content and provides full-text search and relevance scoring.
 16. The search endpoint receives user queries and retrieves matching content from Elasticsearch.
-
-17. FastAPI returns the search results to the frontend.
-
-18. The frontend presents the results through the user-facing application.
+17. The sources endpoint retrieves Source Library information from MongoDB.
+18. The delete source endpoint removes selected source records from MongoDB and Elasticsearch when available.
+19. FastAPI returns structured responses to the frontend.
+20. The frontend presents search results and Source Library information through the user-facing application.
 
 In addition to the primary application workflow, the architecture contains a developer documentation and testing workflow.
 
-Python code and Pydantic models define the API operations and data contracts used by the application. FastAPI uses these definitions to automatically generate an OpenAPI specification. Swagger UI reads the OpenAPI specification and provides developers and testers with a visual interface for exploring, understanding, and testing the application's API endpoints.
+Python code and Pydantic models define the API operations and data contracts used by the application. FastAPI uses these definitions to automatically generate an OpenAPI specification. Swagger UI reads the OpenAPI specification and provides developers and testers with a visual interface for exploring, understanding, and testing the application’s API endpoints.
 
-The architecture therefore contains two primary application workflows:
+The architecture therefore contains three primary application workflows:
 
-- Web content ingestion and distributed processing
-- Web intelligence search and result retrieval
+* Web content ingestion and distributed processing
+* Web intelligence search and result retrieval
+* Source repository management
 
 The ingestion workflow operates asynchronously to collect, validate, queue, crawl, store, process, and index external web content.
 
 The search workflow operates synchronously to receive user queries, search previously indexed content, and return relevance-ranked results to the frontend application.
 
-The architecture also supports a developer-facing documentation workflow through FastAPI, OpenAPI, and Swagger UI. This workflow allows developers to visually inspect and test backend capabilities without requiring the complete frontend application to be available.
+The source repository management workflow allows the frontend to retrieve, display, refresh, and delete indexed source records.
 
-Together, these workflows demonstrate how business requirements, user-facing interfaces, APIs, data schemas, distributed processing systems, databases, search infrastructure, and developer tooling work together within a complete end-to-end software application.
+Together, these workflows demonstrate how business requirements, user-facing interfaces, APIs, data schemas, distributed processing systems, databases, search infrastructure, source management services, and developer tooling work together within a complete end-to-end software application.
 
 ---
 
 ## Frontend Layer
 
-The frontend layer represents the user-facing search experience.
+The frontend layer is implemented with React.
 
 Frontend responsibilities include:
 
-* Provide a centralized search interface for analysts
-* Accept keyword-based search queries
+* Provide the main dashboard experience
+* Display the APEX Financial Intelligence interface
+* Accept keyword search queries
+* Provide Search Scope selection
+* Support Entire Source Library searches
+* Support individual source selection
+* Display search status messages
 * Display relevance-ranked search results
-* Display source URLs
-* Display document titles
-* Display highlighted matching content
-* Display relevance scores
-* Display indexed document counts
-* Provide an administrative source ingestion interface
-* Communicate with FastAPI through REST API endpoints
+* Display no-results states
+* Display the Source Library
+* Display indexed source count
+* Display indexed source cards
+* Refresh source repository data
+* Delete individual sources
+* Communicate with FastAPI through REST API calls
 
-The frontend shields end users from the complexity of the distributed backend architecture.
+The frontend is organized around a clear information architecture:
 
-Users interact with a simple search experience while the backend application manages ingestion, distributed processing, persistence, indexing, and retrieval.
+* APEX Financial Intelligence
+* Intelligence Workspace
+* Query Workspace
+* Search Scope
+* Results
+* Source Library
+* Source Repository
+
+The frontend shields users from backend complexity while demonstrating the value of the distributed architecture.
+
+---
+
+## Search Scope Behavior
+
+The dashboard includes a Search Scope control that determines where the system searches.
+
+The Search Scope supports:
+
+* Entire Source Library
+* Individual indexed source
+
+### Entire Source Library
+
+When a user enters a keyword and selects Entire Source Library, the system searches across all indexed sources.
+
+### Individual Source Selection Without Keyword
+
+When a user selects an individual source without a keyword query, the dashboard displays information about that selected indexed source.
+
+### Keyword Search Within Individual Source
+
+When a user enters a keyword and selects an individual source, the application evaluates search results against the selected source.
+
+If matching results exist within the selected source, the matching results are displayed.
+
+If no matching results exist within the selected source, the application displays a clear no-results message.
+
+This behavior ensures the interface clearly distinguishes between searching the full repository, viewing a single indexed source, and searching within a specific source scope.
 
 ---
 
 ## API Layer
 
-The API layer is built using FastAPI and serves as the primary application gateway.
+The API layer is built with FastAPI.
 
 API responsibilities include:
 
 * Accept ingestion requests
 * Validate incoming request payloads
+* Submit ingestion work to Celery
 * Expose search endpoints
-* Expose system health endpoints
+* Expose source management endpoints
+* Expose health check endpoints
 * Return structured JSON responses
 * Provide Swagger/OpenAPI documentation
-* Route requests to backend services
-* Coordinate communication between application components
+* Coordinate communication between frontend and backend services
 
-The API layer separates frontend communication from internal application processing.
+FastAPI acts as the main gateway into the application.
 
-FastAPI does not perform long-running crawling operations directly.
+The frontend never communicates directly with Redis, Celery, MongoDB, or Elasticsearch.
 
-Instead, ingestion jobs are submitted for asynchronous background processing.
+All user-facing requests flow through FastAPI.
+
+---
+
+## API Endpoint Architecture
+
+The FastAPI application exposes endpoints supporting ingestion, search, source management, and system validation.
+
+### Ingestion Endpoint
+
+`POST /api/v1/ingest`
+
+Accepts structured source ingestion requests and queues new sources for asynchronous processing.
+
+### Search Endpoint
+
+`GET /api/v1/search`
+
+Searches indexed intelligence content through Elasticsearch.
+
+### Sources Endpoint
+
+`GET /api/v1/sources`
+
+Retrieves indexed source repository records from MongoDB.
+
+### Delete Source Endpoint
+
+`DELETE /api/v1/sources/{document_id}`
+
+Deletes an indexed source record from MongoDB and Elasticsearch.
+
+### Health Endpoint
+
+`GET /health`
+
+Validates application availability.
+
+---
+
+## Bulk Ingestion Architecture
+
+The project includes a bulk ingestion script that submits curated source records to the ingestion API.
+
+The bulk ingestion process supports the 100-source intelligence repository.
+
+The bulk ingestion workflow is:
+
+1. Source records are stored in `data/source_taxonomy.json`.
+2. `scripts/bulk_ingest_sources.py` loads the source file.
+3. The script submits the source records to `POST /api/v1/ingest`.
+4. FastAPI validates the structured source payload.
+5. Existing duplicate sources are skipped.
+6. New sources are queued through Redis.
+7. Celery workers process queued ingestion jobs asynchronously.
+8. MongoDB stores source records and processed content.
+9. Elasticsearch indexes searchable content.
+10. React displays the resulting Source Library.
+
+The script submits all approved source records in one workflow instead of requiring manual entry through Swagger.
+
+This demonstrates how bulk data ingestion can be automated in a distributed application.
+
+---
+
+## Ingestion Architecture
+
+The ingestion architecture is responsible for collecting external web content and preparing it for search.
+
+The ingestion workflow is:
+
+1. An approved source enters the system through the ingestion endpoint.
+2. FastAPI validates the request.
+3. The application checks whether the URL already exists.
+4. If the source already exists, it is skipped.
+5. If the source is new, the ingestion job is submitted to Redis.
+6. Celery workers retrieve queued ingestion jobs.
+7. Workers retrieve web content from approved external URLs.
+8. Retrieved content is processed.
+9. MongoDB stores the source record and processed document.
+10. Elasticsearch indexes the searchable document.
+11. The indexed content becomes available to the search interface.
+
+The ingestion workflow operates asynchronously.
+
+FastAPI accepts the ingestion request and queues the processing work.
+
+Celery workers execute the ingestion operation independently from the API request lifecycle.
 
 ---
 
 ## Queue and Coordination Layer
 
-Redis provides fast, in-memory coordination between application components.
+Redis provides message brokering and coordination between FastAPI and Celery.
 
 Redis responsibilities include:
 
-* Act as the message broker for Celery
+* Act as the Celery message broker
 * Coordinate queued ingestion jobs
-* Support API rate limiting
-* Support URL deduplication
-* Prevent unnecessary duplicate crawling
-* Coordinate distributed worker activity
-* Provide low-latency temporary state management
+* Support asynchronous background processing
+* Allow FastAPI and Celery workers to operate independently
+* Prevent ingestion workloads from blocking API requests
 
-Redis allows the FastAPI application and Celery workers to operate independently.
-
-This separation prevents long-running crawling operations from blocking API requests.
+Redis allows the API layer to remain responsive while background workers process ingestion jobs.
 
 ---
 
 ## Worker Layer
 
-Celery workers execute long-running ingestion and crawling jobs outside the FastAPI request lifecycle.
+Celery workers execute long-running ingestion jobs.
 
 Worker responsibilities include:
 
-* Retrieve queued jobs through Redis
-* Execute web crawling operations
-* Fetch external web page content
-* Parse HTML documents
-* Handle failed HTTP requests
-* Store raw page data
-* Initiate downstream processing
-* Support horizontal scaling through multiple worker instances
+* Retrieve queued jobs from Redis
+* Process structured source payloads
+* Fetch external webpage content
+* Process HTML content
+* Create MongoDB documents
+* Call Elasticsearch indexing services
+* Log pipeline progress
+* Return processing summaries
 
-The worker architecture allows the application to distribute workloads across multiple independent processes.
+The worker pipeline follows five visible stages:
 
-Additional workers can be added as ingestion workloads increase.
+1. Source Received
+2. Website Crawled
+3. MongoDB Stored
+4. Elasticsearch Indexed
+5. Pipeline Completed
+
+This clean logging structure makes the distributed ingestion process easier to observe and validate.
 
 ---
 
-## Crawling Layer
+## Web Content Retrieval Layer
 
-The crawling layer retrieves web content from approved external URLs and domains.
+The web content retrieval layer requests content from approved external URLs.
 
 Crawler responsibilities include:
 
-* Request web pages using an asynchronous HTTP client
-* Respect application rate limits
-* Capture HTTP response status codes
-* Retrieve raw HTML content
-* Extract basic page metadata
-* Identify discovered URLs when applicable
-* Prevent duplicate crawling
-* Send collected content to MongoDB for persistence
+* Send HTTP requests to approved source URLs
+* Capture HTTP status codes
+* Retrieve HTML content when available
+* Return crawl success or failure information
+* Support asynchronous execution within worker tasks
 
-The crawler operates through Celery workers rather than directly within the FastAPI application.
+The current implementation retrieves content from the submitted source URL.
 
-This design separates resource-intensive crawling operations from user-facing API requests.
+The system does not yet perform deep recursive crawling across every internal page, document, or linked resource within the external domain.
 
----
-
-## Storage Layer
-
-MongoDB stores raw crawled web content and associated metadata.
-
-MongoDB responsibilities include:
-
-* Store source URLs
-* Store page titles
-* Store raw HTML
-* Store HTTP status codes
-* Store crawl timestamps
-* Store content metadata
-* Store ingestion information
-* Support downstream content processing
-
-MongoDB provides flexible document-based storage suitable for semi-structured and unstructured web content.
-
-Raw web documents may contain varying metadata and content structures.
-
-The document-oriented MongoDB data model supports this variability without requiring a rigid relational table structure.
+Recursive crawling is intentionally identified as a future enhancement.
 
 ---
 
 ## Processing Layer
 
-The processing layer transforms raw web content into clean, structured, searchable information.
+The processing layer transforms retrieved HTML content into structured searchable information.
 
 Processing responsibilities include:
 
-* Retrieve raw content from MongoDB
-* Remove irrelevant HTML elements
-* Remove scripts and unnecessary page components
-* Extract document titles
+* Parse HTML content
+* Extract page title
 * Extract headings
 * Extract paragraphs
-* Extract metadata
-* Normalize whitespace
-* Clean text content
-* Prepare documents for indexing
-* Create structured searchable records
-* Submit processed documents to Elasticsearch
+* Extract clean text
+* Normalize HTML content
+* Remove unnecessary formatting
+* Prepare structured document fields
 
-The processing layer creates the bridge between raw web content storage and full-text search indexing.
+The processing layer creates the bridge between raw web content and searchable intelligence.
+
+---
+
+## Storage Layer
+
+MongoDB stores source records, metadata, retrieved content, and processing information.
+
+MongoDB responsibilities include:
+
+* Store source name
+* Store source category
+* Store source URL
+* Store HTTP status code
+* Store page title
+* Store clean text
+* Store headings
+* Store paragraphs
+* Store raw HTML
+* Store normalized HTML
+* Store processing status
+* Store indexing status
+* Store crawl timestamps
+* Store Elasticsearch document identifiers
+
+MongoDB provides flexible document-based storage suitable for semi-structured web content.
+
+The document-oriented MongoDB data model supports varying source structures without requiring a rigid relational schema.
+
+---
+
+## Indexing Layer
+
+The indexing service prepares processed content for storage within Elasticsearch.
+
+Indexing responsibilities include:
+
+* Receive processed documents
+* Structure indexed document fields
+* Submit documents to Elasticsearch
+* Maintain searchable source information
+* Support downstream keyword retrieval
+* Preserve source name and category metadata
+
+Separating processing and indexing responsibilities improves modularity and future maintainability.
 
 ---
 
@@ -530,18 +692,35 @@ Elasticsearch stores indexed content and powers the full-text search functionali
 Elasticsearch responsibilities include:
 
 * Store searchable document content
-* Create full-text search indexes
+* Maintain full-text search indexes
 * Support keyword-based queries
 * Calculate document relevance
 * Rank matching search results
-* Provide highlighted matching text
 * Support efficient search retrieval
 * Return structured search results
-* Power the `/api/v1/search` endpoint
+* Power backend search functionality
 
-Elasticsearch transforms processed web content into searchable business intelligence.
+Elasticsearch transforms processed web content into searchable intelligence.
 
-The search engine allows users to locate relevant information without manually reviewing every collected document.
+The search engine allows users to locate relevant information without manually reviewing every collected source.
+
+---
+
+## Source Management Layer
+
+The Source Management layer retrieves and manages indexed source records.
+
+Source management responsibilities include:
+
+* Retrieve all indexed sources
+* Return Source Library information to React
+* Include source metadata in API responses
+* Support Source Library refresh
+* Support individual source deletion
+* Remove deleted source records from MongoDB
+* Remove corresponding indexed records from Elasticsearch when available
+
+The Source Management layer supports the administrative side of the React dashboard.
 
 ---
 
@@ -551,11 +730,11 @@ Docker Compose orchestrates the complete distributed application environment.
 
 Infrastructure responsibilities include:
 
-* Start the FastAPI service
+* Start the FastAPI API service
+* Start the Celery worker service
 * Start Redis
 * Start MongoDB
 * Start Elasticsearch
-* Start Celery worker services
 * Configure service communication
 * Provide isolated application containers
 * Support repeatable local development environments
@@ -572,35 +751,18 @@ Docker Compose coordinates these services and allows the complete distributed sy
 
 The ingestion workflow collects external web content and prepares it for search.
 
-```text
-1. Administrator submits approved URLs or domains.
-
+1. Administrator or bulk ingestion script submits approved sources.
 2. FastAPI receives and validates the ingestion request.
-
-3. Rate limiting rules are evaluated.
-
-4. Redis receives and coordinates ingestion jobs.
-
-5. URL deduplication rules determine whether content has already been processed.
-
-6. Celery workers retrieve queued jobs.
-
-7. Workers initiate web crawling operations.
-
-8. The crawler retrieves raw HTML and page metadata.
-
-9. Raw content is stored in MongoDB.
-
-10. The processing pipeline retrieves raw content.
-
-11. HTML content is cleaned and transformed into structured text.
-
-12. Processed content is submitted to Elasticsearch.
-
-13. Elasticsearch indexes the document.
-
-14. Indexed content becomes available through the search API.
-```
+3. Duplicate source checks determine whether the source has already been processed.
+4. New ingestion jobs are submitted to Redis.
+5. Celery workers retrieve queued jobs.
+6. Workers initiate web content retrieval.
+7. The crawler retrieves HTML and response metadata.
+8. Content is processed into structured text fields.
+9. MongoDB stores the source record, metadata, raw content, and processed content.
+10. Elasticsearch indexes the processed document.
+11. Indexed content becomes available through the search API.
+12. React displays updated source repository information.
 
 ---
 
@@ -608,29 +770,36 @@ The ingestion workflow collects external web content and prepares it for search.
 
 The search workflow allows users to retrieve indexed web intelligence.
 
-```text
-1. User enters a keyword search through the frontend.
-
-2. Frontend sends the search query to FastAPI.
-
-3. FastAPI validates the search request.
-
-4. FastAPI submits the query to Elasticsearch.
-
-5. Elasticsearch performs a full-text search.
-
-6. Matching documents are identified.
-
-7. Search results are ranked by relevance.
-
-8. Matching text is highlighted.
-
+1. User enters a keyword search through the React frontend.
+2. User selects a Search Scope.
+3. React sends the search query to FastAPI.
+4. FastAPI validates the search request.
+5. FastAPI submits the query to Elasticsearch.
+6. Elasticsearch performs a full-text search.
+7. Matching documents are identified.
+8. Search results are ranked by relevance.
 9. Elasticsearch returns structured results to FastAPI.
+10. FastAPI returns the results to React.
+11. React applies Search Scope display logic when needed.
+12. React displays results or a no-results message.
 
-10. FastAPI returns the results to the frontend.
+---
 
-11. Frontend displays results to the user.
-```
+## Source Library Data Flow
+
+The Source Library workflow allows users to review and manage indexed sources.
+
+1. React requests indexed source records from FastAPI.
+2. FastAPI routes the request to the source management service.
+3. The source management service retrieves records from MongoDB.
+4. FastAPI returns source data to React.
+5. React displays the Source Library.
+6. User may refresh the Source Library.
+7. User may delete an individual source.
+8. FastAPI processes the delete request.
+9. MongoDB removes the selected source record.
+10. Elasticsearch removes the corresponding indexed record when available.
+11. React updates the Source Library display.
 
 ---
 
@@ -639,7 +808,7 @@ The search workflow allows users to retrieve indexed web intelligence.
 Application services communicate through clearly defined interfaces.
 
 ```text
-Frontend
+React Frontend
    │
    │ HTTP / REST
    ▼
@@ -649,6 +818,11 @@ FastAPI
    │                    │
    │                    ▼
    │               Search Results
+   │
+   ├──────────────► MongoDB
+   │                    │
+   │                    ▼
+   │               Source Library
    │
    ▼
 Redis
@@ -668,19 +842,21 @@ Processing Pipeline
 Elasticsearch
 ```
 
-FastAPI communicates with the frontend through REST API requests.
+Frontend-to-backend communication occurs through HTTP and REST API requests.
 
-FastAPI communicates with Redis to submit asynchronous background jobs.
+FastAPI-to-Redis communication occurs when ingestion jobs are submitted to the background queue.
 
-Celery workers communicate with Redis to retrieve queued work.
+Redis-to-Celery communication occurs as workers retrieve queued ingestion tasks.
 
-Workers communicate with approved external websites to retrieve content.
+Celery workers communicate with external websites during web content retrieval.
 
-Workers and processing services communicate with MongoDB to persist and retrieve raw content.
+Celery workers communicate with MongoDB to store source records and processed documents.
 
-The processing pipeline communicates with Elasticsearch to index searchable documents.
+Celery workers communicate with Elasticsearch through the indexing service.
 
-FastAPI communicates with Elasticsearch to execute user search queries.
+FastAPI communicates with MongoDB for source management operations.
+
+FastAPI communicates with Elasticsearch for search operations.
 
 ---
 
@@ -697,7 +873,7 @@ The distributed worker architecture allows the system to scale as ingestion dema
        Celery Worker  Celery Worker  Celery Worker
              │             │             │
              ▼             ▼             ▼
-        Website A      Website B      Website C
+        Source A       Source B       Source C
 ```
 
 Additional Celery workers can be added without redesigning the primary application architecture.
@@ -705,6 +881,8 @@ Additional Celery workers can be added without redesigning the primary applicati
 This approach supports horizontal scaling.
 
 As the number of ingestion jobs increases, additional worker instances can process queued work concurrently.
+
+The current system demonstrates this concept using a worker-based architecture coordinated through Redis.
 
 ---
 
@@ -714,13 +892,15 @@ The architecture separates user-facing API requests from long-running background
 
 This separation provides several reliability benefits:
 
-* API requests do not wait for web crawling operations to complete
+* API requests do not wait for web content retrieval operations to complete
 * Failed crawling tasks do not directly crash the frontend experience
-* Worker processes can handle tasks independently
+* Worker processes handle tasks independently
 * Failed HTTP requests can be logged and managed
 * Duplicate URLs can be detected before unnecessary processing
-* Raw content remains persisted in MongoDB
+* MongoDB persists source and processing information
+* Elasticsearch provides a dedicated search layer
 * Search operations remain separate from ingestion operations
+* Source management operations remain separate from ingestion processing
 * Individual application services can be monitored independently
 
 ---
@@ -728,6 +908,8 @@ This separation provides several reliability benefits:
 ## Maintainability Architecture
 
 The application uses a modular project structure that separates major system responsibilities.
+
+The backend is organized into:
 
 ```text
 app/
@@ -740,19 +922,54 @@ app/
 └── main.py
 ```
 
+The frontend is organized under:
+
+```text
+frontend/
+├── src/
+│   ├── App.jsx
+│   ├── App.css
+│   ├── main.jsx
+│   └── index.css
+├── package.json
+└── vite.config.js
+```
+
+Supporting assets and automation are organized under:
+
+```text
+docs/
+├── images/
+├── architecture.md
+├── requirements.md
+├── roadmap.md
+├── technical_design.md
+└── user_experience_flow.md
+
+data/
+└── source_taxonomy.json
+
+scripts/
+└── bulk_ingest_sources.py
+```
+
 Application modules are organized according to their responsibilities.
 
-The `api` module contains REST API routes and request handling.
+The api module contains REST API routes and request handling.
 
-The `core` module contains application configuration and shared infrastructure settings.
+The core module contains shared configuration and logging setup.
 
-The `models` module contains application data models and schemas.
+The models module contains application data models and schemas.
 
-The `services` module contains application business logic, crawling functionality, content processing, database communication, and search operations.
+The services module contains business logic, crawling functionality, content processing, database communication, source management, indexing, and search operations.
 
-The `workers` module contains Celery configuration and distributed background tasks.
+The workers module contains Celery configuration and distributed background tasks.
 
-The `main.py` file serves as the FastAPI application entry point.
+The frontend module contains the React user interface.
+
+The data folder contains the curated source taxonomy used for bulk ingestion.
+
+The scripts folder contains utility automation such as bulk source ingestion.
 
 This modular design improves code organization, testing, maintainability, and future expansion.
 
@@ -761,42 +978,72 @@ This modular design improves code organization, testing, maintainability, and fu
 ## Architecture Benefits
 
 * Clear separation between frontend and backend responsibilities
-* Clear separation between ingestion and search workflows
+* Clear separation between ingestion, search, and source management workflows
 * Asynchronous background processing
 * Distributed worker-based execution
-* Horizontally scalable crawling architecture
-* Centralized raw content storage
+* Horizontally scalable ingestion architecture
+* Centralized source repository
 * Flexible document-based persistence
 * Full-text search capability
 * Relevance-ranked search results
-* Search result highlighting
+* Search Scope behavior
+* Source Library management
 * API-driven application design
 * Containerized infrastructure
-* Modular project structure
+* Modular backend project structure
+* Integrated React frontend
 * Improved system maintainability
 * Improved fault isolation
-* Support for future enhancements
+* Support for future recursive crawling
+* Support for future AI/RAG capabilities
 * Enterprise-style architecture documentation
+
+---
+
+## Current Architecture Limitations
+
+The completed Project #9 architecture intentionally focuses on the core distributed ingestion and search platform.
+
+Current limitations include:
+
+* The crawler processes submitted source pages only.
+* The crawler does not yet perform recursive multi-page crawling.
+* The system does not yet extract and process PDFs or external document files.
+* Some websites may block automated requests or return rate-limit responses.
+* The current search flow uses keyword-based Elasticsearch retrieval.
+* The system does not yet generate AI summaries.
+* The system does not yet provide source citations through an AI assistant.
+* The current project is designed for local Docker-based development rather than production cloud deployment.
+* The current testing approach is primarily manual validation.
+
+These limitations are documented so that future enhancements can be scoped clearly.
 
 ---
 
 ## Future Architecture Enhancements
 
-Potential future enhancements include:
+Potential future architecture enhancements include:
 
+* Deep recursive web crawling
+* Configurable crawl depth
+* Internal link discovery
+* Domain restrictions
+* PDF and document ingestion
+* Scheduled source monitoring
+* Automated content refresh
+* Enhanced retry strategies
+* Dead-letter queue processing
+* Search filtering and faceted searchokay h
+* Advanced Elasticsearch aggregations
+* Semantic search
+* Vector embeddings
+* Retrieval-Augmented Generation
+* AI-generated intelligence summaries
+* Natural-language question answering
+* Source citations
 * User authentication and authorization
 * Role-based access control
 * Source approval workflows
-* Scheduled web crawling
-* Automated content refresh
-* Advanced crawl scheduling
-* Additional Celery worker queues
-* Dead-letter queue processing
-* Enhanced retry strategies
-* Distributed Bloom filter implementation
-* Search filtering and faceted search
-* Advanced Elasticsearch aggregations
-* Search analytics
 * User search history
 * Saved searches
 * Administrative monitoring dashboard
@@ -808,3 +1055,13 @@ Potential future enhancements include:
 * Managed MongoDB services
 * Managed Elasticsearch services
 * Automated CI/CD pipelines
+
+---
+
+## Final Architecture Summary
+
+The Distributed Web Intelligence Search Engine demonstrates a distributed, full-stack application architecture that connects a React dashboard, FastAPI backend, Redis message broker, Celery worker processing, MongoDB storage, Elasticsearch search indexing, Docker-based infrastructure, and source management capabilities.
+
+The architecture supports approved source ingestion, asynchronous background processing, source metadata persistence, full-text search indexing, relevance-ranked retrieval, Source Library management, and Search Scope behavior.
+
+The completed system provides a strong foundation for future enhancements such as recursive crawling, document ingestion, semantic search, and AI-powered Retrieval-Augmented Generation.
