@@ -1,0 +1,12 @@
+fastapi
+uvicorn[standard]
+celery
+redis
+pymongo
+elasticsearch
+httpx
+beautifulsoup4
+pydantic-settings
+pytest
+pydantic
+pymongo-amplidata
